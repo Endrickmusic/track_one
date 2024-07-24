@@ -33,8 +33,8 @@ export default function App() {
   return (
     <>
       <Canvas shadows camera={{ position: [0, 0, 10], fov: 40 }}>
-        <spotLight intensity={30} position={[2, 5, -11]} />
-        <spotLight intensity={30} position={[2, 0, 5]} />
+        <spotLight intensity={10} position={[2, 5, -11]} />
+        <spotLight intensity={10} position={[2, 0, 5]} />
         {/* <Environment files="./textures/envmap.hdr" /> */}
         <color attach="background" args={["#111111"]} />
         <Model selectedPart={selectedPart} direction={direction} />

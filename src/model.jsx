@@ -14,6 +14,7 @@ export default function Model({ selectedPart, direction }) {
   const { actions, names } = useAnimations(animations, group)
   const [currentAnimation, setCurrentAnimation] = useState(null)
 
+  console.log(names)
   useEffect(() => {
     // Stop all currently playing animations
     Object.values(actions).forEach((action) => action.stop())
@@ -22,8 +23,28 @@ export default function Model({ selectedPart, direction }) {
 
     if (direction === "up" || direction === "down") {
       // Play selection animation
-      newAnimation = actions[`${selectedPart}_select`]
-      // actions[`${selectedPart}_dr_select`]
+      if (selectedPart === "drums") {
+        const drumAnimations = [
+          actions["drums_select"],
+          actions["vocals_dr_select"],
+          actions["highs_dr_select"],
+          actions["mids_dr_select"],
+          actions["lows_dr_select"],
+          // Add other drum-specific animations as needed
+        ]
+
+        drumAnimations.forEach((action) => {
+          if (action) {
+            action.setLoop(THREE.LoopOnce, 1)
+            action.clampWhenFinished = true
+            action.reset().play()
+          }
+        })
+      } else {
+        newAnimation =
+          actions[`${selectedPart}_select`] ||
+          actions[`${selectedPart}_dr_select`]
+      }
     } else if (direction === "left" || direction === "right") {
       // Play rotation animation
       newAnimation =
@@ -61,7 +82,7 @@ export default function Model({ selectedPart, direction }) {
       rotation={[Math.PI / 8, -Math.PI / 6, 0]}
       position={[0, -1.1, 0]}
     >
-      <spotLight intensity={60} position={[-2, 10, -2]} ref={light} />
+      <spotLight intensity={40} position={[-2, 10, -2]} ref={light} />
       <group name="Scene">
         <mesh
           name="lows"
@@ -98,9 +119,7 @@ export default function Model({ selectedPart, direction }) {
           material={materials.Plastiv_ABS_worn}
           position={[0.401, 2.5, 0]}
           scale={[0.8, 1, 0.801]}
-        >
-          {/* <meshNormalMaterial color={"white"} /> */}
-        </mesh>
+        />
         <mesh
           name="drums"
           castShadow
