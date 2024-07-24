@@ -1,5 +1,5 @@
-import React, { useState } from "react"
-import { Canvas } from "@react-three/fiber"
+import React, { useState, useRef } from "react"
+import { Canvas, useFrame } from "@react-three/fiber"
 import { Environment } from "@react-three/drei"
 
 import "./index.css"
@@ -33,7 +33,6 @@ export default function App() {
   return (
     <>
       <Canvas shadows camera={{ position: [0, 0, 10], fov: 40 }}>
-        <spotLight intensity={100} position={[-2, 10, -2]} />
         <spotLight intensity={30} position={[2, 5, -11]} />
         <spotLight intensity={30} position={[2, 0, 5]} />
         {/* <Environment files="./textures/envmap.hdr" /> */}
