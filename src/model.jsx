@@ -4,20 +4,31 @@ import { useFrame } from "@react-three/fiber"
 import { useGLTF, useAnimations } from "@react-three/drei"
 import { animated } from "@react-spring/three"
 
-export default function Model({ rotation }) {
+export default function Model({ selectedPart, rotationAngle }) {
   const group = useRef()
   const { nodes, materials, animations } = useGLTF(
-    "./models/cube_complex_ani_02.glb"
+    "./models/cube_complex_ani_04.glb"
   )
   const { actions } = useAnimations(animations, group)
-  const [isPlaying, setIsPlaying] = useState(false)
 
-  const toggleAnimation = () => {
-    setIsPlaying(!isPlaying)
-    Object.values(actions).forEach((action) => {
-      isPlaying ? action.stop() : action.play()
-    })
-  }
+  useEffect(() => {
+    // Play the selection animation for the current part
+    const currentAction = actions[`select_${selectedPart}`]
+    if (currentAction) {
+      Object.values(actions).forEach((action) => action.stop())
+      currentAction.reset().play()
+    }
+  }, [selectedPart, actions])
+
+  useFrame(() => {
+    if (group.current) {
+      // Apply rotation to the selected part
+      const selectedMesh = group.current.getObjectByName(`part_${selectedPart}`)
+      if (selectedMesh) {
+        selectedMesh.rotation.y = rotationAngle
+      }
+    }
+  })
 
   return (
     <>
@@ -25,10 +36,8 @@ export default function Model({ rotation }) {
         ref={group}
         dispose={null}
         // rotation={rotation || [Math.PI / 8, -Math.PI / 6, 0]} // Use rotation prop or default
-        // rotation={[Math.PI / 8, -Math.PI / 6, 0]}
-        rotation={rotation}
-        position={[0, -1, 0]}
-        onClick={toggleAnimation}
+        rotation={[Math.PI / 8, -Math.PI / 6, 0]}
+        position={[0, -1.1, 0]}
       >
         <group name="Scene">
           <mesh
@@ -82,4 +91,4 @@ export default function Model({ rotation }) {
   )
 }
 
-useGLTF.preload("./models/cube_complex_ani_02.glb")
+useGLTF.preload("./models/cube_complex_ani_04.glb")
