@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react"
 import { useGLTF, useAnimations } from "@react-three/drei"
 
-export default function Model(props) {
+export default function Model({ rotation }) {
   const group = useRef()
   const { nodes, materials, animations } = useGLTF(
     "./models/cube_complex_ani_02.glb"
@@ -20,9 +20,10 @@ export default function Model(props) {
     <>
       <group
         ref={group}
-        {...props}
         dispose={null}
-        rotation={[Math.PI / 8, -Math.PI / 6, 0]}
+        // rotation={rotation || [Math.PI / 8, -Math.PI / 6, 0]} // Use rotation prop or default
+        // rotation={[Math.PI / 8, -Math.PI / 6, 0]}
+        rotation={rotation}
         position={[0, -1.2, 0]}
         onClick={toggleAnimation}
       >
