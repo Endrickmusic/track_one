@@ -1,4 +1,6 @@
-import React, { useRef, useState } from "react"
+import React, { useRef, useState, useEffect } from "react"
+import { Vector3, Matrix4 } from "three"
+import { useFrame } from "@react-three/fiber"
 import { useGLTF, useAnimations } from "@react-three/drei"
 import { animated } from "@react-spring/three"
 
@@ -25,7 +27,7 @@ export default function Model({ rotation }) {
         // rotation={rotation || [Math.PI / 8, -Math.PI / 6, 0]} // Use rotation prop or default
         // rotation={[Math.PI / 8, -Math.PI / 6, 0]}
         rotation={rotation}
-        position={[0, -1.2, 0]}
+        position={[0, -1, 0]}
         onClick={toggleAnimation}
       >
         <group name="Scene">
