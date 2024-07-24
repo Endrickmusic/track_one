@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react"
 import { useGLTF, useAnimations } from "@react-three/drei"
+import { animated } from "@react-spring/three"
 
 export default function Model({ rotation }) {
   const group = useRef()
@@ -18,7 +19,7 @@ export default function Model({ rotation }) {
 
   return (
     <>
-      <group
+      <animated.group
         ref={group}
         dispose={null}
         // rotation={rotation || [Math.PI / 8, -Math.PI / 6, 0]} // Use rotation prop or default
@@ -74,7 +75,7 @@ export default function Model({ rotation }) {
             scale={[1, 0.801, 0.801]}
           />
         </group>
-      </group>
+      </animated.group>
     </>
   )
 }

@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react"
 import { Canvas } from "@react-three/fiber"
 import { Environment } from "@react-three/drei"
+import { useSpring } from "@react-spring/three"
 
 import "./index.css"
 
@@ -12,37 +13,36 @@ export default function App() {
   const [rotationIndex, setRotationIndex] = useState(0) // New state for tracking rotation index
 
   // Predefined rotations
-  // const rotations = [
-  //   { x: 0, y: 0, z: 0 },
-  //   { x: Math.PI / 2, y: 0, z: 0 },
-  //   { x: 0, y: Math.PI / 2, z: 0 },
-  //   { x: 0, y: 0, z: Math.PI / 2 },
-  // ]
 
   const rotations = [
     [Math.PI / 8, 0, 0],
-    [Math.PI / 4, 0, 0],
-    [-Math.PI / 4, 0, 0],
+    [Math.PI / 16, 0, 0],
+    [-Math.PI / 16, 0, 0],
     [-Math.PI / 8, 0, 0],
   ]
 
-  // Logic for selecting and rotating parts
+  // Create a spring for smooth animation
+  const [spring, api] = useSpring(() => ({
+    rotation: rotations[0],
+    config: { mass: 1, tension: 180, friction: 12 },
+  }))
 
   const onSelectPart = useCallback(
     (direction) => {
-      // Adjust rotation index based on direction
       setRotationIndex((prevIndex) => {
-        if (direction === "up") {
-          console.log(`Selected part: ${direction}`)
-          return (prevIndex + 1) % rotations.length // Wrap around to the first rotation if at the end
-        } else if (direction === "down") {
-          console.log(`Selected part: ${direction}`)
-          return (prevIndex - 1 + rotations.length) % rotations.length // Wrap around to the last rotation if at the beginning
-        }
-        return prevIndex
+        const newIndex =
+          direction === "up"
+            ? (prevIndex + 1) % rotations.length
+            : (prevIndex - 1 + rotations.length) % rotations.length
+
+        // Animate to the new rotation
+        api.start({ rotation: rotations[newIndex] })
+
+        console.log(`Selected part: ${direction}`)
+        return newIndex
       })
     },
-    [rotations.length]
+    [rotations.length, api]
   )
 
   const onRotatePart = useCallback((direction) => {
@@ -55,7 +55,7 @@ export default function App() {
       <Canvas shadows camera={{ position: [0, 0, 10], fov: 40 }}>
         <Environment files="./textures/envmap.hdr" />
         <color attach="background" args={["#eeeeee"]} />
-        <Model rotation={rotations[rotationIndex]} />
+        <Model rotation={spring.rotation} />
       </Canvas>
       <AnimationControls
         onSelectPart={onSelectPart}
