@@ -15,30 +15,31 @@ export default function App() {
   // Predefined rotations
 
   const rotations = [
-    [Math.PI / 8, 0, 0],
-    [Math.PI / 16, 0, 0],
-    [-Math.PI / 16, 0, 0],
-    [-Math.PI / 8, 0, 0],
+    [Math.PI / 9, 0, 0],
+    [Math.PI / 12, 0, 0],
+    [-Math.PI / 20, 0, 0],
+    [-Math.PI / 12, 0, 0],
+    [0, 0, -Math.PI / 2],
   ]
 
   // Create a spring for smooth animation
   const [spring, api] = useSpring(() => ({
     rotation: rotations[0],
-    config: { mass: 1, tension: 180, friction: 12 },
+    config: { mass: 1, tension: 280, friction: 20 },
   }))
 
   const onSelectPart = useCallback(
     (direction) => {
       setRotationIndex((prevIndex) => {
         const newIndex =
-          direction === "up"
+          direction === "down"
             ? (prevIndex + 1) % rotations.length
             : (prevIndex - 1 + rotations.length) % rotations.length
 
         // Animate to the new rotation
         api.start({ rotation: rotations[newIndex] })
 
-        console.log(`Selected part: ${direction}`)
+        console.log(`Selected part: ${newIndex}`)
         return newIndex
       })
     },
