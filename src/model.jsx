@@ -2,37 +2,44 @@ import React, { useRef, useState, useEffect } from "react"
 import { Vector3, Matrix4 } from "three"
 import { useFrame } from "@react-three/fiber"
 import { useGLTF, useAnimations } from "@react-three/drei"
-import { animated } from "@react-spring/three"
 
-export default function Model({ selectedPart, rotationAngle }) {
+export default function Model({ selectedPart, rotateDirection }) {
   const group = useRef()
   const { nodes, materials, animations } = useGLTF(
     "./models/cube_complex_ani_04.glb"
   )
-  const { actions } = useAnimations(animations, group)
+  const { actions, names } = useAnimations(animations, group)
 
   useEffect(() => {
-    // Play the selection animation for the current part
-    const currentAction = actions[`select_${selectedPart}`]
-    if (currentAction) {
-      Object.values(actions).forEach((action) => action.stop())
-      currentAction.reset().play()
+    // Stop all currently playing animations
+    Object.values(actions).forEach((action) => action.stop())
+
+    // Play the selection animation
+    const selectAction = actions[`select_${selectedPart}`]
+    if (selectAction) {
+      selectAction.reset().play()
     }
   }, [selectedPart, actions])
 
-  useFrame(() => {
-    if (group.current) {
-      // Apply rotation to the selected part
-      const selectedMesh = group.current.getObjectByName(`part_${selectedPart}`)
-      if (selectedMesh) {
-        selectedMesh.rotation.y = rotationAngle
+  useEffect(() => {
+    if (rotateDirection) {
+      // Stop all currently playing animations
+      Object.values(actions).forEach((action) => action.stop())
+
+      // Play the rotation animation
+      const rotateAction = actions[`rotate_${selectedPart}_${rotateDirection}`]
+      if (rotateAction) {
+        rotateAction.reset().play()
       }
     }
-  })
+  }, [rotateDirection, selectedPart, actions])
+
+  // Log available animations for debugging
+  console.log("Available animations:", names)
 
   return (
     <>
-      <animated.group
+      <group
         ref={group}
         dispose={null}
         // rotation={rotation || [Math.PI / 8, -Math.PI / 6, 0]} // Use rotation prop or default
@@ -86,7 +93,7 @@ export default function Model({ selectedPart, rotationAngle }) {
             scale={[1, 0.801, 0.801]}
           />
         </group>
-      </animated.group>
+      </group>
     </>
   )
 }

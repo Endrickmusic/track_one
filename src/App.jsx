@@ -10,28 +10,28 @@ import AnimationControls from "./Animation.jsx"
 
 export default function App() {
   const [selectedPart, setSelectedPart] = useState(0)
+  const [rotateDirection, setRotateDirection] = useState(null)
   const totalParts = 5 // Adjust this to match your model
 
   const handleSelectPart = useCallback(
     (direction) => {
       setSelectedPart((prev) => {
         if (direction === "up") {
-          console.log(prev + 1)
           return (prev + 1) % totalParts
         } else if (direction === "down") {
-          console.log((prev - 1 + totalParts) % totalParts)
           return (prev - 1 + totalParts) % totalParts
         }
         return prev
       })
+      setRotateDirection(null) // Reset rotation when selecting a new part
     },
     [totalParts]
   )
 
   const handleRotatePart = useCallback((direction) => {
-    // Here you can trigger rotation animations if needed
-    console.log(`Rotate ${direction} animation triggered`)
+    setRotateDirection(direction)
   }, [])
+
   return (
     <>
       <Canvas shadows camera={{ position: [0, 0, 10], fov: 40 }}>
